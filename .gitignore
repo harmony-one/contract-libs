@@ -1,0 +1,18 @@
+*.swp
+
+# logs
+logs
+*.log
+npm-debug.log
+
+# macOS
+.DS_Store
+
+# truffle build
+build/
+
+# dependency
+node_modules
+
+# local env variables
+.env
