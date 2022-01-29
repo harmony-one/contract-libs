@@ -19,6 +19,12 @@ contract OwnershipValidator is Ownable {
         delete _addrMap[ethAddress];
     }
 
+    function initialize(string memory ethAddress, address[] memory owners, uint[] memory tokenIds)
+    external virtual onlyOwner {
+        require(address(0) != address(_addrMap[ethAddress]), "the eth address has not been registered");
+        return Token721(address(_addrMap[ethAddress])).initialize(owners, tokenIds);
+    }
+
     function updateOwnership(string memory ethAddress, address[] memory owners, uint[] memory tokenIds)
     external virtual onlyOwner {
         require(address(0) != address(_addrMap[ethAddress]), "the eth address has not been registered");
