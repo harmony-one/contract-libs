@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.0;
 
 import "./IToken721.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
-contract Token721 is ERC721, ERC721Enumerable, IToken721, Ownable, Initializable {
+contract Token721 is ERC721, ERC721Enumerable, IToken721, Ownable {
+    string public baseURI;
 
     constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {}
 
-    function initialize(address[] memory owners, uint[] memory tokenIds) public initializer {
+    function initialize(address[] memory owners, uint[] memory tokenIds) external virtual override onlyOwner {
         require(owners.length != 0, "owners must be provided");
         require(owners.length == tokenIds.length, "data doesn't match");
         for (uint i = 0; i < owners.length; i++) {
@@ -26,6 +26,14 @@ contract Token721 is ERC721, ERC721Enumerable, IToken721, Ownable, Initializable
             require(_exists(tokenIds[i]), "tokenId doesn't exist");
             _transfer(ownerOf(tokenIds[i]), owners[i], tokenIds[i]);
         }
+    }
+
+    function setBaseURI(string memory baseURI_) public virtual override onlyOwner {
+        baseURI = baseURI_;
+    }
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return baseURI;
     }
 
     function approve(address to, uint256 tokenId) public virtual override(IERC721, ERC721) {
